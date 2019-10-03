@@ -99,7 +99,7 @@ afterEvaluate { project ->
 
     repositories {
       mavenDeployer {
-        repository(url: "file://${rootProject.buildDir}/localMaven")
+        repository(url: "file:///Users/jrod/.m2/repository")
 
         configurePom(pom)
       }
