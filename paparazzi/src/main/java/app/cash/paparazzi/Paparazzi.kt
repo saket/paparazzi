@@ -86,6 +86,13 @@ class Paparazzi(
       super.getValue(id, outValue, resolveRefs)
       outValue.assetCookie = 2
       outValue.data = id
+
+      // ResourcesCompat.getFont() early exits if the font's path doesn't start with "res/".
+      // Will have to find a better way of loading resources with relative paths.
+      // Source: ResourcesCompat#L385 (v1.1.0).
+      if (outValue.string.endsWith(".ttf")) {
+        outValue.string = outValue.string.substring(outValue.string.indexOf("res/"))
+      }
     }
   }
 

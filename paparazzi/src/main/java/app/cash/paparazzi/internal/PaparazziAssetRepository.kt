@@ -26,6 +26,13 @@ import java.io.InputStream
 internal class PaparazziAssetRepository(private val assetPath: String) : AssetRepository() {
   @Throws(FileNotFoundException::class)
   private fun open(path: String): InputStream? {
+    var path = path
+
+    // See PaparazziResources#getValue().
+    if (path.startsWith("res/")) {
+      path = "/Users/saket/SQ/paparazzi/sample/build/intermediates/$path"
+    }
+
     val asset = File(path)
     return when {
       asset.isFile -> FileInputStream(asset)
