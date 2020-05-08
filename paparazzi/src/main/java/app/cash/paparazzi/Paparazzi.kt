@@ -16,7 +16,9 @@
 package app.cash.paparazzi
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Resources
+import android.util.TypedValue
 import android.view.BridgeInflater
 import android.view.Choreographer_Delegate
 import android.view.LayoutInflater
@@ -68,10 +70,24 @@ class Paparazzi(
     get() = RenderAction.getCurrentContext().getSystemService("layout_inflater") as BridgeInflater
 
   val resources: Resources
-    get() = RenderAction.getCurrentContext().resources
+    get() = context.resources
 
   val context: Context
-    get() = RenderAction.getCurrentContext()
+    get() = ContextWithResources(RenderAction.getCurrentContext())
+
+  class ContextWithResources(base: Context) : ContextWrapper(base) {
+    override fun getResources(): Resources {
+      return PaparazziResources(super.getResources())
+    }
+  }
+
+  class PaparazziResources(delegate: Resources): ResourcesWrapper(delegate) {
+    override fun getValue(id: Int, outValue: TypedValue, resolveRefs: Boolean) {
+      super.getValue(id, outValue, resolveRefs)
+      outValue.assetCookie = 2
+      outValue.data = id
+    }
+  }
 
   val contentRoot = """
         |<?xml version="1.0" encoding="utf-8"?>
