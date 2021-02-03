@@ -322,6 +322,24 @@ class PaparazziPluginTest {
   }
 
   @Test
+  fun resourceAttribute() {
+    val fixtureRoot = File("src/test/projects/resource-attribute")
+
+    gradleRunner
+        .withArguments("testDebug", "--stacktrace")
+        .runFixture(fixtureRoot) { build() }
+
+    val snapshotsDir = File(fixtureRoot, "build/reports/paparazzi/images")
+    val snapshots = snapshotsDir.listFiles()
+    assertThat(snapshots!!).hasLength(1)
+
+    val snapshotImage = snapshots[0]
+
+    val goldenImage = File(fixtureRoot, "src/test/resources/golden.png")
+    assertThat(snapshotImage).isSimilarTo(goldenImage).withDefaultThreshold()
+  }
+
+  @Test
   fun customFontsInXml() {
     val fixtureRoot = File("src/test/projects/custom-fonts-xml")
 
